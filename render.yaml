@@ -1,0 +1,34 @@
+services:
+  # Web service
+  - type: web
+    name: ntandostore-hosting
+    runtime: node
+    plan: free
+    env: node
+    buildCommand: "npm install"
+    startCommand: "node server.js"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: SESSION_SECRET
+        generateValue: true
+    healthCheckPath: /
+    autoDeploy: true
+    disk:
+      name: ntandostore-storage
+      mountPath: /opt/render/project/uploads
+      sizeGB: 10
+
+  # Background service for file processing (if needed)
+  - type: pserv
+    name: ntandostore-worker
+    runtime: node
+    plan: free
+    env: node
+    buildCommand: "npm install"
+    startCommand: "node worker.js"
+    envVars:
+      - key: NODE_ENV
+        value: production
